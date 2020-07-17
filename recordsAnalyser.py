@@ -11,7 +11,7 @@ testuj = 0
 
 class recordsAnalyser:
     
-    def analyseBalanceForTheCompany(self, recordBase, symbol, printSummary):
+    def analyseBalanceForTheCompany(self, recordBase, symbol, printSummary, beginDate = date(2019, 1, 1), endDate = date(2030, 1, 1)):
         
         recordsForCompany = list()
         
@@ -23,16 +23,17 @@ class recordsAnalyser:
         balanceDividend = 0        
                 
         for item in recordsForCompany:
-            if(item["type"] == "BUY"):
-                balanceTransaction = balanceTransaction - item["Amount"]
-            elif(item["type"] == "SELL"):
-                balanceTransaction = balanceTransaction + item["Amount"]
-            elif(item["type"] == "DIV"):
-                balanceDividend = balanceDividend + item["Amount"]
-            elif(item["type"] == "DIVFT"):
-                balanceDividend = balanceDividend - item["Amount"]
-            elif(item["type"] == "DIVNRA"):
-                balanceDividend = balanceDividend - item["Amount"]
+            if(item["date"] >= beginDate and item["date"] <= endDate):
+                if(item["type"] == "BUY"):
+                    balanceTransaction = balanceTransaction - item["Amount"]
+                elif(item["type"] == "SELL"):
+                    balanceTransaction = balanceTransaction + item["Amount"]
+                elif(item["type"] == "DIV"):
+                    balanceDividend = balanceDividend + item["Amount"]
+                elif(item["type"] == "DIVFT"):
+                    balanceDividend = balanceDividend - item["Amount"]
+                elif(item["type"] == "DIVNRA"):
+                    balanceDividend = balanceDividend - item["Amount"]
                 
         if(printSummary):
             print("Balance for company", symbol, "transaction balance", round(balanceTransaction,2), "dividend balance", round(balanceDividend,2), "total balance", round(balanceTransaction + balanceDividend,2))
@@ -49,7 +50,11 @@ class TestingClass(unittest.TestCase):
         balance = analyser.analyseBalanceForTheCompany(base, "TM", 1)
         self.assertEqual(round(balance, 1), round(2.88, 1))
         
-
+    def test_numberOfRecords2(self):
+        base = [{'date': date(2019, 9, 24), 'type': 'BUY', 'Symbol': 'TM', 'Quantity': 1.0, 'Price': 137.33, 'Amount': 137.33}, {'date': date(2019, 10, 31), 'type': 'SELL', 'Symbol': 'TM', 'Quantity': -1.0, 'Price': 138.69, 'Amount': 138.68}, {'date': date(2019, 12, 9), 'type': 'DIV', 'Symbol': 'TM', 'Quantity': 0.0, 'Price': 0.0, 'Amount': 2.04}, {'date': date(2019, 12, 9), 'type': 'DIVFT', 'Symbol': 'TM', 'Quantity': 0.0, 'Price': 0.0, 'Amount': 0.51}]
+        analyser = recordsAnalyser()
+        balance = analyser.analyseBalanceForTheCompany(base, "TM", 1, date(2019, 9, 1), date(2019, 11, 1))
+        self.assertEqual(round(balance, 1), round(1.33, 1))
         
 
 if(testuj):

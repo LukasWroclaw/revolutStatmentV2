@@ -16,6 +16,7 @@ class pdfParser:
     def __init__(self, listOfRecords):
         self.converter = stringToDataBaseElementsConverter()
         self.listOfRecords = listOfRecords
+
     
     def extractActivityParagraph(self, text):
         buffor = text.split("ACTIVITY")
@@ -60,6 +61,9 @@ class pdfParser:
             elif(bufforForLines[3] == "DIV" or bufforForLines[3] == "DIVFT" or bufforForLines[3] == "DIVNRA"):
                 bufforForLines = self.trimAdditionalFieldAndProcess(bufforForLines)
                 
+
+        
+                
     def analyzeFile(self, fileName):
         readerInstance = pdfRead()
         readerInstance.createFileHandler(fileName)
@@ -71,6 +75,8 @@ class pdfParser:
         self.extractActivityParagraph(text)        
         self.splitActivityParagraphIntoSeparateLines()
         self.splitLinesIntoSeparateReports()
+        
+    
             
         
         
@@ -128,7 +134,6 @@ class TestingClass(unittest.TestCase):
         parserInstance.analyzeFile(inputFile)
         self.assertEqual(len(parserInstance.listOfRecords), 14)
         
-
 if(testuj):
     suite = unittest.TestLoader().loadTestsFromTestCase(TestingClass)
     unittest.TextTestRunner(verbosity=2).run(suite)

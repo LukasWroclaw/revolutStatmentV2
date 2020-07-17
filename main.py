@@ -5,20 +5,30 @@ Created on Sun Apr 19 13:14:30 2020
 @author: marszale
 """
 
-
+from datetime import date
 from pdfParse import pdfParser
+from directoryHandler import directoryHandler
 from recordsAnalyser import recordsAnalyser
 
 recordList = list()
 
 parserInstance = pdfParser(recordList)
-parserInstance.analyzeFile("Sep2019.pdf")
-parserInstance.analyzeFile("Oct2019.pdf")
-parserInstance.analyzeFile("Nov2019.pdf")
-parserInstance.analyzeFile("Dec2019.pdf")
-parserInstance.analyzeFile("Jan2020.pdf")
-parserInstance.analyzeFile("Feb2020.pdf")
-parserInstance.analyzeFile("Mar2020.pdf")
+
+directoryHandler = directoryHandler()
+
+files = directoryHandler.listFilesInDirectoryWithPrefix("./dataBase")
+
+
+for file in files:
+    parserInstance.analyzeFile(file)
+
+#parserInstance.analyzeFile("./dataBase/Sep2019.pdf")
+#parserInstance.analyzeFile("./dataBase/Oct2019.pdf")
+#parserInstance.analyzeFile("./dataBase/Nov2019.pdf")
+#parserInstance.analyzeFile("./dataBase/Dec2019.pdf")
+#parserInstance.analyzeFile("./dataBase/Jan2020.pdf")
+#parserInstance.analyzeFile("./dataBase/Feb2020.pdf")
+#parserInstance.analyzeFile("./dataBase/Mar2020.pdf")
 
 analyser = recordsAnalyser()
 balance = analyser.analyseBalanceForTheCompany(recordList, "TM", 1)
