@@ -11,7 +11,35 @@ testuj = 0
 
 class recordsAnalyser:
     
-    def analyseBalanceForTheCompany(self, recordBase, symbol, printSummary, beginDate = date(2019, 1, 1), endDate = date(2030, 1, 1)):
+    def printTransactionHistoryFunction(self, item, toPrint=1):
+        if(toPrint == 1):
+            print("##", "Date", item["date"], item["type"], "Amout", item["Amount"], "Quantity", item["Quantity"],"\n")
+        
+    def actionAnalyser(self,item, toPrint):
+        balanceTransaction = 0
+        balanceDividend = 0
+        
+        if(item["type"] == "BUY"):
+            balanceTransaction = balanceTransaction - item["Amount"]
+            self.printTransactionHistoryFunction(item,toPrint)
+        elif(item["type"] == "SELL"):
+            balanceTransaction = balanceTransaction + item["Amount"]
+            self.printTransactionHistoryFunction(item,toPrint)
+        elif(item["type"] == "DIV"):
+            balanceDividend = balanceDividend + item["Amount"]
+            self.printTransactionHistoryFunction(item,toPrint)
+        elif(item["type"] == "DIVFT"):
+            balanceDividend = balanceDividend - item["Amount"]
+            self.printTransactionHistoryFunction(item,toPrint)
+        elif(item["type"] == "DIVNRA"):
+            balanceDividend = balanceDividend - item["Amount"]
+            self.printTransactionHistoryFunction(item,toPrint)
+            
+        return {"balanceTransaction": balanceTransaction, "balanceDividend": balanceDividend}
+        
+        
+    
+    def analyseBalanceForTheCompany(self, recordBase, symbol, printSummary=0, printTransactionHistory=0 ,beginDate = date(2019, 1, 1), endDate = date(2030, 1, 1)):
         
         recordsForCompany = list()
         
@@ -24,17 +52,10 @@ class recordsAnalyser:
                 
         for item in recordsForCompany:
             if(item["date"] >= beginDate and item["date"] <= endDate):
-                if(item["type"] == "BUY"):
-                    balanceTransaction = balanceTransaction - item["Amount"]
-                elif(item["type"] == "SELL"):
-                    balanceTransaction = balanceTransaction + item["Amount"]
-                elif(item["type"] == "DIV"):
-                    balanceDividend = balanceDividend + item["Amount"]
-                elif(item["type"] == "DIVFT"):
-                    balanceDividend = balanceDividend - item["Amount"]
-                elif(item["type"] == "DIVNRA"):
-                    balanceDividend = balanceDividend - item["Amount"]
-                
+                resultBalance = self.actionAnalyser(item, printTransactionHistory)
+                balanceTransaction = balanceTransaction + resultBalance["balanceTransaction"]
+                balanceDividend = balanceDividend + resultBalance["balanceDividend"]
+                                
         if(printSummary):
             print("Balance for company", symbol, "transaction balance", round(balanceTransaction,2), "dividend balance", round(balanceDividend,2), "total balance", round(balanceTransaction + balanceDividend,2))
             
