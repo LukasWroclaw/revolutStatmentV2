@@ -25,7 +25,7 @@ for file in files:
 
 
 analyser = recordsAnalyser()
-balance = analyser.analyseBalanceForTheCompany(recordList, "TM", 1, 1)
+balance = analyser.analyseBalanceForTheCompany(recordList, "CCI", 1, 1)
 
 
 print("Final gross balance", round(balance,2))
